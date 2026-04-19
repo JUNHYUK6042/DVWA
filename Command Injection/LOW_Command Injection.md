@@ -18,7 +18,7 @@
 
 ## 주요정보통신기반시설 기준
 
-> 출처 : https://www.kisa.or.kr/2060204/form?postSeq=22&page=1#fnPostAttachDownload
+> 출처 : https://www.kisa.or.kr/2060204/form?postSeq=22&page=1#fnPostAttachDownload ( p.679 ~ 692)
 
 ### 점검 내용
 
