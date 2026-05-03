@@ -171,7 +171,7 @@ sqlmap -u "http://192.168.11.36/DVWA/vulnerabilities/sqli_blind/?id=1&Submit=Sub
 
 ![08](/Blind%20SQL%20Injection/img/08.png)
 
-- 실행 결과 dvwa라는 Database가 확인되었습니다.
+- 실행 결과 dvwa와 information_schema 데이터베이스가 확인되었습니다.
 - 이를 통해 Blind SQL Injection 환경에서도 Database 이름을 추출할 수 있다는 것을 확인했습니다.
 
 ---
