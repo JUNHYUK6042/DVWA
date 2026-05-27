@@ -330,9 +330,14 @@ where table_name='users'#
 
 ![17](/SQL%20Injection/img/LOW/17.png)
 
-- 실행 결과 `user`, `password`, `user_id`, `first_name`, `last_name` 등의 컬럼이 존재하는 것을 확인할 수 있었습니다.
-- 특히 `user`와 `password` 컬럼은 사용자 계정 정보와 비밀번호가 저장되는 핵심 컬럼으로 확인되었습니다.
-- 이를 통해 공격자는 단순히 테이블 존재 여부를 확인하는 것이 아니라, 실제 민감한 정보가 저장된 컬럼까지 식별할 수 있습니다.
+- 실행 결과 `USER`, `PASSWORD_ERRORS`, `PASSWORD_EXPIRATION_TIME`, `user_id`, `first_name`, `last_name`,  
+  `password`, `avatar`, `last_login`, `failed_login`, `role`, `account_enabled` 등  
+  총 12개의 컬럼이 존재하는 것을 확인할 수 있었습니다.
+- 특히 `USER`와 `password` 컬럼은 사용자 계정 정보와 비밀번호가 저장되는 핵심 컬럼으로 확인되었으며,  
+  `role` 컬럼을 통해 관리자 권한 여부도 식별 가능한 상태임을 확인하였습니다.
+- `last_login`, `failed_login` 등의 컬럼을 통해 로그인 이력까지 노출될 수 있는 상태입니다.
+- 이를 통해 공격자는 단순히 테이블 존재 여부를 확인하는 것이 아니라,  
+  실제 민감한 정보가 저장된 컬럼까지 식별할 수 있으며, 이후 계정 탈취 및 권한 상승 공격으로 이어질 수 있습니다.
 
 ---
 
