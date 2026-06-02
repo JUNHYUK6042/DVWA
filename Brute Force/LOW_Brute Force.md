@@ -52,7 +52,7 @@
 - DVWA 로그인 페이지에서 Username은 `admin`, Password는 `aaaaaa` 임의의 값 입력 후 로그인 시도합니다.
 - Burp Suite Proxy → HTTP History에서 요청 확인합니다.
 
-![01](/Brute%20Force/img/01.png) 
+<img src="/Brute%20Force/img/01.png" width="100%"> 
 
 ```
 GET /DVWA/vulnerabilities/brute/?username=admin&password=aaaaa&Login=Login
@@ -60,7 +60,7 @@ GET /DVWA/vulnerabilities/brute/?username=admin&password=aaaaa&Login=Login
 
 - GET 방식으로 인증 정보가 전달된 것을 알 수 있으며 Username / Password 파라미터가 존재합니다.
 
-![02](/Brute%20Force/img/02.png)
+<img src="/Brute%20Force/img/02.png" width="100%">
 
 - 해당 요청을 우클릭 후 `Send to Intruder`클릭하여 전송합니다.
 
@@ -70,7 +70,7 @@ GET /DVWA/vulnerabilities/brute/?username=admin&password=aaaaa&Login=Login
 
 - 다음 화면은 Burp Suite에서 Intruder 기능 화면입니다.
 
-![03](/Brute%20Force/img/03.png)
+<img src="/Brute%20Force/img/03.png" width="100%">
 
 - password 파라미터를 공격 위치로 지정하여, Position에서 `Add` 버튼을 클릭하면  
   오른쪽에 Payloads 입력 칸이 나옵니다.
@@ -82,7 +82,7 @@ GET /DVWA/vulnerabilities/brute/?username=admin&password=aaaaa&Login=Login
 - Payload type: Simple list
 - password.lst 파일 로드 (/usr/share/john/password.lst)
 
-![04](/Brute%20Force/img/04.png)
+<img src="/Brute%20Force/img/04.png" width="100%">
 
 - Payload Configuration에서 `/usr/share/john/password.lst` 파일을 업로드합니다.
 
@@ -92,7 +92,7 @@ GET /DVWA/vulnerabilities/brute/?username=admin&password=aaaaa&Login=Login
 
 - Intruder 화면에서 Start Attack 버튼을 클릭하여 공격을 수행합니다.
 
-![05](/Brute%20Force/img/05.png)
+<img src="/Brute%20Force/img/05.png" width="100%">
 
 - 대부분 동일한 응답이 나오며, 특정 요청에서 응답 길이 변화 발생합니다.
 
@@ -102,7 +102,7 @@ GET /DVWA/vulnerabilities/brute/?username=admin&password=aaaaa&Login=Login
 
 - 응답 길이 및 내용을 비교합니다.
 
-![06](/Brute%20Force/img/06.png)
+<img src="/Brute%20Force/img/06.png" width="100%">
 
 - 대부분의 응답 길이가 동일하게 나타났지만, 특정 payload에서만 응답 길이가 다른 것을 확인할 수 있습니다.
 
@@ -114,7 +114,7 @@ GET /DVWA/vulnerabilities/brute/?username=admin&password=aaaaa&Login=Login
 
 - 로그인 화면에서 `admin`/`password` 값을 입력하여 로그인 시도 합니다.
 
-![07](/Brute%20Force/img/07.png)
+<img src="/Brute%20Force/img/07.png" width="100%">
 
 #### 결과
 ```
