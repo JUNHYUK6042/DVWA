@@ -65,7 +65,7 @@
 GET /DVWA/vulnerabilities/csrf/?password_new=test&password_conf=test&Change=Change
 ```
 
-![01](/CSRF/img/01.png)
+<img src="/CSRF/img/01.png" width="100%">
 
 - GET 방식으로 비밀번호 변경 요청이 전달되는 것을 확인할 수 있습니다.
 - 요청에 CSRF 토큰이 존재하지 않으며, 인증은 Cookie(PHPSESSID)에만 의존하고 있습니다.
@@ -78,7 +78,7 @@ GET /DVWA/vulnerabilities/csrf/?password_new=test&password_conf=test&Change=Chan
 
 - 정상적으로 변경 시 다음과 같은 화면이 나옵니다.
 
-![02](/CSRF/img/02.png)
+<img src="/CSRF/img/02.png" width="100%">
 
 ---
 
@@ -92,7 +92,7 @@ GET /DVWA/vulnerabilities/csrf/?password_new=test&password_conf=test&Change=Chan
 http://127.0.0.1/DVWA/vulnerabilities/csrf/?password_new=hacker&password_conf=hacker&Change=Change
 ```
 
-![03](/CSRF/img/03.png) 
+<img src="/CSRF/img/03.png" width="100%"> 
 
 - 해당 코드는 사용자가 해당 링크를 클릭하면 자동으로 비밀번호 변경 요청이 전송됩니다.
 
@@ -104,17 +104,17 @@ http://127.0.0.1/DVWA/vulnerabilities/csrf/?password_new=hacker&password_conf=ha
 
 - 피해자는 내용을 확인하지 못하고 하이퍼 링크를 클릭하게 됩니다.
 
-![04](/CSRF/img/04.png)
+<img src="/CSRF/img/04.png" width="100%" height="480">
 
 - 본 실습에서 개인의 이메일로 전송하여 하이퍼 링크를 클릭하였습니다.
 
-![05](/CSRF/img/05.png)
+<img src="/CSRF/img/05.png" width="100%">
 
 ---
 
 ### 공격 성공 확인
 
-![06](/CSRF/img/06.png)
+<img src="/CSRF/img/06.png" width="100%">
 
 - 링크를 클릭하자마자 사용자의 의도와 상관없이 비밀변호가 변경되었다는 것을 알 수 있습니다.
 
