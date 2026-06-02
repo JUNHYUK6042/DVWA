@@ -71,21 +71,21 @@
 - DVWA File Inclusion 페이지에서 기본 요청이 정상적으로 동작하는지 확인했습니다.
 - 다음 화면은 DVWA의 File Inculsion 실습 초기화면입니다.
 
-![01](/File%20Inclusion/img/LOW/01.png)
+<img src="/File%20Inclusion/img/01.png" width="100%">
 
 - `File1.php, File2.php, File3.php` 파일을 클릭하여 확인합니다.
 
 #### File1.php 화면
 
-![02](/File%20Inclusion/img/LOW/02.png)
+<img src="/File%20Inclusion/img/02.png" width="100%">
 
 #### File2.php 화면
 
-![03](/File%20Inclusion/img/LOW/03.png)
+<img src="/File%20Inclusion/img/03.png" width="100%">
 
 #### File3.php 화면
 
-![04](/File%20Inclusion/img/LOW/04.png)
+<img src="/File%20Inclusion/img/04.png" width="100%">
 
 - 모든 내부 페이지가 정상적으로 출력된 것을 확인할 수 있습니다.
 - 여기서 page=`file1.php, file2.php, file3.php`서버 측 코드에서  
@@ -108,7 +108,7 @@
   ?>
 ```
 
-![05](/File%20Inclusion/img/LOW/05.png)
+<img src="/File%20Inclusion/img/05.png" width="100%">
 
 ---
 
@@ -119,7 +119,7 @@
   ?page=http://127.0.0.1/bad.php
 ```
 
-![06](/File%20Inclusion/img/LOW/06.png)
+<img src="/File%20Inclusion/img/06.png" width="100%">
 
 - 화면에 RFI Success!! 문자열이 출력되는 것을 확인했습니다.  
 - 이는 외부 서버의 파일이 포함되어 실행되었다는 의미입니다.
@@ -136,9 +136,9 @@
   ?>
 ```
 
-![07](/File%20Inclusion/img/LOW/07.png)
+<img src="/File%20Inclusion/img/07.png" width="100%">
 
-![08](/File%20Inclusion/img/LOW/08.png)
+<img src="/File%20Inclusion/img/08.png" width="100%">
 
 - 화면에 RFI Success!! 문자열이 출력되는 것을 확인합니다.
 - 따라서 외부 서버의 파일이 포함되어 실행되었다는 의미입니다.
@@ -152,7 +152,7 @@
 - LFI는 서버 내부 파일을 포함시키는 방식의 취약점입니다.
 - 주로 ../ 와 같은 디렉토리 트래버설을 이용해 내부 파일에 접근합니다.
 
-![09](/File%20Inclusion/img/LOW/09.png)
+<img src="/File%20Inclusion/img/09.png" width="100%">
 
 - `../`를 입력하면 상위 디렉터리로 이동합니다.
 - 그리고 `../`를 충분히 입력하게 되면 최상위 디렉터리에 접근합니다.
@@ -167,7 +167,7 @@
 http://127.0.0.1/DVWA/vulnerabilities/fi/?page=../../../../../../etc/passwd
 ```
 
-![10](/File%20Inclusion/img/LOW/10.png)
+<img src="/File%20Inclusion/img/10.png" width="100%">
 
 - 해당 URL 로 접속한 결과, 서버 내부의 /etc/passwd 파일 내용이 출력되는 것을 확인했습니다.
 - 이를 통해 상위 디렉토리 접근이 가능하며, 로컬 파일 포함(LFI) 취약점이 존재한다는 점을 확인했습니다.
