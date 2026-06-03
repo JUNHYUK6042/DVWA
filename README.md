@@ -1,1 +1,50 @@
 # DVWA
+
+IT 개발 전공을 기반으로 정보보안 분야로 역량을 확장하고자 진행한 웹 보안 실습 기록입니다.  
+DVWA(Damn Vulnerable Web Application) 환경에서 주요 웹 취약점을 직접 점검·분석하고,  
+주요정보통신기반시설 기술적 취약점 분석·평가 기준에 따라 보고서로 정리한 기록입니다.
+
+---
+
+## 실습 환경
+
+| 구분 | 내용 |
+|------|------|
+| OS | Kali Linux |
+| 대상 | DVWA (Damn Vulnerable Web Application) |
+| 도구 | Burp Suite |
+| 기준 | 주요정보통신기반시설 기술적 취약점 분석·평가 기준 |
+
+---
+
+## 📂 실습 목차
+
+### 🔐 인증 / 세션
+
+| 실습 | 설명 |
+|------|------|
+| [Brute Force](./Brute%20Force) | 무차별 대입을 통한 계정 탈취 점검 |
+| [CSRF](./CSRF) | 인증 세션을 악용한 요청 위조 점검 |
+
+### 💉 Injection
+
+| 실습 | 설명 |
+|------|------|
+| [Command Injection](./Command%20Injection) | 시스템 명령어 주입 점검 |
+| [SQL Injection](./SQL%20Injection) | DB 조작을 위한 SQL 구문 주입 점검 |
+| [Blind SQL Injection](./Blind%20SQL%20Injection) | 응답 차이를 이용한 SQLi 심화 점검 |
+
+### 📁 파일
+
+| 실습 | 설명 |
+|------|------|
+| [File Inclusion](./File%20Inclusion) | 내부·외부 파일 포함(LFI/RFI) 점검 |
+| [File Upload](./File%20Upload) | 악성 파일 업로드 점검 |
+
+### 🖥️ XSS
+
+| 실습 | 설명 |
+|------|------|
+| [XSS (Reflected)](./XSS%20(Reflected)) | 반사형 스크립트 삽입 점검 |
+| [XSS (Stored)](./XSS%20(Stored)) | 저장형 스크립트 삽입 점검 |
+| [XSS (DOM)](./XSS%20(DOM)) | DOM 기반 스크립트 삽입 점검 |
