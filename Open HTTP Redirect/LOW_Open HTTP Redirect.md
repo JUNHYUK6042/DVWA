@@ -1,6 +1,7 @@
 # Open HTTP Redirect 취약점 실습
 
 ## 개요
+
 - 본 실습에서는 DVWA의 Low 단계에서 Open HTTP Redirect 취약점을 대상으로 `redirect` 파라미터 값에 대한  
   검증 없이 외부 URL로 리다이렉트가 가능한지 확인하여 비검증 리다이렉트 취약점 존재 여부를 점검했습니다.
 
@@ -60,7 +61,7 @@
 - DVWA Open HTTP Redirect 페이지로, Quote 1과 Quote 2 두 개의 링크가 제공됩니다.
 - 각 링크 클릭 시 `redirect` 파라미터를 통해 내부 페이지로 이동하는 구조입니다.
 
-<img src="/Open_HTTP_Redirect/img/01.png" width="100%">
+<img src="/Open%20HTTP%20Redirect/img/01.png" width="100%">
 
 ---
 
@@ -69,7 +70,7 @@
 - Quote 1 클릭 시 주소창이 `open_redirect/source/info.php?id=1`로 변경되며 내부 페이지로 이동합니다.
 - `redirect` 파라미터가 `id=1`을 통해 내부 경로를 지정하는 구조임을 확인할 수 있습니다.
 
-<img src="/Open_HTTP_Redirect/img/02.png" width="100%">
+<img src="/Open%20HTTP%20Redirect/img/02.png" width="100%">
 
 ---
 
@@ -78,7 +79,7 @@
 - Quote 2 클릭 시 주소창이 `open_redirect/source/info.php?id=2`로 변경되며 내부 페이지로 이동합니다.
 - Low 레벨에서는 `redirect` 파라미터 값에 대한 검증이 전혀 없어 임의의 URL 삽입이 가능한 구조입니다.
 
-<img src="/Open_HTTP_Redirect/img/03.png" width="100%">
+<img src="/Open%20HTTP%20Redirect/img/03.png" width="100%">
 
 ---
 
@@ -93,7 +94,7 @@
 
 - 서버는 `redirect` 파라미터 값이 외부 URL임에도 검증 없이 `Location` 헤더에 그대로 삽입하여 리다이렉트를 수행합니다.
 
-<img src="/Open_HTTP_Redirect/img/04.png" width="100%">
+<img src="/Open%20HTTP%20Redirect/img/04.png" width="100%">
 
 ---
 
@@ -107,7 +108,7 @@
 
 - 정상 요청은 내부 경로(`info.php?id=2`)로 이동하지만, 변조 요청은 외부 URL로 리다이렉트가 가능한 상태입니다.
 
-<img src="/Open_HTTP_Redirect/img/05.png" width="100%">
+<img src="/Open%20HTTP%20Redirect/img/05.png" width="100%">
 
 ---
 
@@ -122,7 +123,7 @@
 
 - DVWA 서버를 경유하여 google.com으로 완전히 리다이렉트된 것이 확인됩니다.
 
-<img src="/Open_HTTP_Redirect/img/06.png" width="100%">
+<img src="/Open%20HTTP%20Redirect/img/06.png" width="100%">
 
 ---
 
@@ -131,7 +132,7 @@
 - `redirect` 파라미터에 `https://www.google.com`을 삽입한 결과, 브라우저가 실제 google.com으로 이동했습니다.
 - 주소창이 `www.google.com`으로 변경되어 외부 리다이렉트가 완전히 성공한 것을 확인할 수 있습니다.
 
-<img src="/Open_HTTP_Redirect/img/07.png" width="100%">
+<img src="/Open%20HTTP%20Redirect/img/07.png" width="100%">
 
 ---
 
@@ -186,6 +187,7 @@ if (in_array($_GET['redirect'], $allowed)) {
 - `https://www.google.com` 같은 외부 URL은 배열에 없으므로 조건이 false가 되어 리다이렉트 자체가 실행되지 않습니다.
 
 #### 핵심 효과
+
 - 외부 URL 삽입 자체를 서버에서 차단하여 Open Redirect 공격을 방지할 수 있습니다.
 
 ---
