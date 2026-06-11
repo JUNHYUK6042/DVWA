@@ -24,6 +24,8 @@ DVWA(Damn Vulnerable Web Application) 환경에서 주요 웹 취약점을 직�
 |------|------|
 | [Brute Force](./Brute%20Force/LOW_Brute%20Force.md) | 무차별 대입을 통한 계정 탈취 점검 |
 | [CSRF](./CSRF/LOW_CSRF.md) | 인증 세션을 악용한 요청 위조 점검 |
+| [Authorisation Bypass](./Authorisation%20Bypass/LOW_Authorisation%20Bypass.md) | 권한 검증 미흡으로 인한 비인가 접근 점검 |
+| [Weak Session IDs](./Weak_Session_IDs/LOW_Weak_Session_IDs.md) | 예측 가능한 세션 ID로 인한 세션 탈취 점검 |
 
 ### 💉 Injection
 
@@ -40,10 +42,17 @@ DVWA(Damn Vulnerable Web Application) 환경에서 주요 웹 취약점을 직�
 | [File Inclusion](./File%20Inclusion/LOW_File%20Inclusion.md) | 내부·외부 파일 포함(LFI/RFI) 점검 |
 | [File Upload](./File%20Upload/LOW_File_Upload.md) | 악성 파일 업로드 점검 |
 
-### 🖥️ XSS
+### 🖥️ XSS / 클라이언트
 
 | 실습 | 설명 |
 |------|------|
 | [XSS (Reflected)](./XSS%20(Reflected)/LOW_XSS%20(Reflected).md) | 반사형 스크립트 삽입 점검 |
 | [XSS (Stored)](./XSS%20(Stored)/LOW_XSS%20(Stored).md) | 저장형 스크립트 삽입 점검 |
 | [XSS (DOM)](./XSS%20(DOM)/LOW_XSS%20(DOM).md) | DOM 기반 스크립트 삽입 점검 |
+| [CSP Bypass](./CSP%20Bypass/LOW_CSP%20Bypass.md) | 콘텐츠 보안 정책(CSP) 우회 점검 |
+
+### 🔀 리다이렉트
+
+| 실습 | 설명 |
+|------|------|
+| [Open HTTP Redirect](./Open%20HTTP%20Redirect/LOW_Open%20HTTP%20Redirect.md) | 검증되지 않은 외부 URL 리다이렉트 점검 |
