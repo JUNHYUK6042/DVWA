@@ -49,7 +49,7 @@ DVWA(Damn Vulnerable Web Application) 환경에서 주요 웹 취약점을 직�
 | [XSS (Reflected)](./XSS%20(Reflected)/LOW_XSS%20(Reflected).md) | 반사형 스크립트 삽입 점검 |
 | [XSS (Stored)](./XSS%20(Stored)/LOW_XSS%20(Stored).md) | 저장형 스크립트 삽입 점검 |
 | [XSS (DOM)](./XSS%20(DOM)/LOW_XSS%20(DOM).md) | DOM 기반 스크립트 삽입 점검 |
-| [CSP Bypass](./CSP%20Bypass/LOW_CSP%20Bypass.md) | 콘텐츠 보안 정책(CSP) 우회 점검 |
+| [CSP Bypass](./CSP%20Bypass/LOW_CSP_Bypass.md) | 콘텐츠 보안 정책(CSP) 우회 점검 |
 
 ### 🔀 리다이렉트
 
