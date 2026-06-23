@@ -3,9 +3,8 @@
 ## 개요
 
 - 세션 ID(Session ID)는 로그인한 사용자를 서버가 식별하기 위해 발급하는 고유한 값입니다.
-- Weak Session IDs는 세션 ID 생성 방식이 예측 가능하거나  
-  엔트로피가 부족해 공격자가 유효한 세션 ID를 추측할 수 있는 취약점입니다.
-- OWASP Top 10 2021 기준 **A07: Identification and Authentication Failures**에 해당합니다.
+- Weak Session IDs는 세션 ID 생성 방식이 예측 가능하거나 엔트로피가 부족해 공격자가 유효한 세션 ID를 추측할 수 있는 취약점입니다.
+- OWASP Top 10 2025 기준 **A07: Authentication Failures**에 해당합니다.
 
 ---
 
@@ -43,7 +42,7 @@
   → 서버가 `dvwaSession=9f3a2c8b1e47d605...` 형태의 암호학적 난수 발급  
 
 - 취약한 세션 발급 (DVWA Low 레벨)  
-  → `dvwaSession=1` → `dvwaSession=2` → `dvwaSession=3` 순으로 증가
+  → `dvwaSession=1` → `dvwaSession=2` → `dvwaSession=3` 순으로 증가  
 
 - 공격 시도  
   → 공격자 세션 ID가 `5`임을 확인  
@@ -73,6 +72,6 @@
 
 ## 정리
 
-- Weak Session IDs는 예측 가능한 세션 ID 생성으로 인해 공격자가 타 사용자의 세션을 탈취하는 취약점입니다.
-- 핵심은 **예측 가능성(Predictability)**이며, 충분한 엔트로피와 CSPRNG 적용으로 방어합니다.
-- OWASP DVWA Low 레벨은 세션 ID를 1씩 증가시키는 가장 단순한 형태의 취약점을 구현하고 있습니다.
+- Weak Session IDs는 예측 가능한 세션 ID 생성으로 인해 공격자가 실제 인증 없이 타 사용자의 세션을 탈취할 수 있는 취약점입니다.
+- 핵심은 **예측 가능성(Predictability)**이며, 세션 ID 생성 패턴이 노출되는 순간 인증 체계 전체가 무너질 수 있습니다.
+- 세션 ID는 충분한 엔트로피(128비트 이상)와 CSPRNG로 생성하고, 세션 만료 및 재발급 정책을 함께 운용하는 것이 핵심 방어 전략입니다.
