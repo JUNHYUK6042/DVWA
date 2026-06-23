@@ -1,5 +1,4 @@
 # DVWA
-
 DVWA(Damn Vulnerable Web Application) 환경에서 주요 웹 취약점을 직접 점검·분석하고,  
 주요정보통신기반시설 기술적 취약점 분석·평가 기준에 따라 보고서로 정리한 문서입니다.
 
@@ -26,6 +25,7 @@ DVWA(Damn Vulnerable Web Application) 환경에서 주요 웹 취약점을 직�
 | [CSRF](./CSRF/LOW_CSRF.md) | 인증 세션을 악용한 요청 위조 점검 |
 | [Authorisation Bypass](./Authorisation%20Bypass/LOW_Authorisation%20Bypass.md) | 권한 검증 미흡으로 인한 비인가 접근 점검 |
 | [Weak Session IDs](./Weak_Session_IDs/LOW_Weak_Session_IDs.md) | 예측 가능한 세션 ID로 인한 세션 탈취 점검 |
+| [Insecure CAPTCHA](./Insecure%20Captcha/LOW_Insecure_CAPTCHA.md) | CAPTCHA 검증 누락으로 인한 프로세스 우회 점검 |
 
 ### 💉 Injection
 
@@ -50,6 +50,7 @@ DVWA(Damn Vulnerable Web Application) 환경에서 주요 웹 취약점을 직�
 | [XSS (Stored)](./XSS%20(Stored)/LOW_XSS%20(Stored).md) | 저장형 스크립트 삽입 점검 |
 | [XSS (DOM)](./XSS%20(DOM)/LOW_XSS%20(DOM).md) | DOM 기반 스크립트 삽입 점검 |
 | [CSP Bypass](./CSP%20Bypass/LOW_CSP_Bypass.md) | 콘텐츠 보안 정책(CSP) 우회 점검 |
+| [JavaScript Attacks](./JavaScript%20Attacks/LOW_JavaScript_Attacks.md) | 클라이언트 JavaScript 보안 로직 노출 점검 |
 
 ### 🔀 리다이렉트
 
