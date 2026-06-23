@@ -36,18 +36,24 @@
 
 ## 예시
 
-- 정상 업로드  
-  → image.jpg  
-  → profile.png  
+- 정상 업로드
+```
+image.jpg
+profile.png
+```
 
-- 공격 업로드  
-  → shell.php  
-  → shell.php.jpg  
-  → shell.phtml  
-  → shell.php%00.jpg  
+- 공격 업로드 (확장자 우회 포함)
+```
+shell.php             -- 직접 PHP 웹쉘 업로드
+shell.php.jpg         -- 이중 확장자 우회
+shell.phtml           -- 대체 확장자 우회
+shell.php%00.jpg      -- Null Byte 우회
+```
 
-- 요청 예시  
-  → 파일 업로드 후 `http://target.com/uploads/shell.php` 접근  
+- 업로드 후 실행 접근 경로
+```
+http://target.com/uploads/shell.php
+```
 
 ---
 
