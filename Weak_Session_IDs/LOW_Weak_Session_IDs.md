@@ -1,6 +1,7 @@
 # Weak Session IDs 취약점 실습
 
 ## 개요
+
 - 본 실습에서는 DVWA의 Low 단계에서 Weak Session IDs 취약점을 대상으로  
   세션 ID가 예측 가능한 순차 증가 방식으로 발급되어 공격자가 타 사용자의 세션 ID를 추측하고  
   세션 하이재킹이 가능한지 확인하여 취약한 세션 관리 여부를 점검했습니다.
@@ -13,17 +14,20 @@
 
 > 출처 : https://www.kisa.or.kr/2060204/form?postSeq=22&page=1#fnPostAttachDownload ( p.759~762 )
 
-### 점검 내용 (16. 불충분한 세션 관리 / p.759)
+### 점검 내용
+
 - 세션 만료 기간 설정, 예측 가능한 세션 ID 생성, 고정된 세션 ID 발행 등 세션 관리 정책을 점검합니다.
 
 ---
 
 ### 점검 목적
+
 - 사용자의 세션 ID를 적절히 관리하여 공격자가 불법적으로 접근하거나 비인가적인 세션 탈취를 차단하기 위함입니다.
 
 ---
 
 ### 보안 위협
+
 - 사용자에게 발급되는 세션 ID가 만료되지 않거나, 고정 및 예측 가능한 형태일 경우,  
   공격자는 해당 세션 ID를 탈취하여 타 사용자나 시스템에 무단 접근할 수 있으며,  
   이로 인해 중요 데이터의 무결성이 훼손될 수 있습니다.
@@ -33,9 +37,11 @@
 ### 판단 기준
 
 #### 양호
+
 - 추측 불가능한 세션 ID가 발급되고, 세션 종료 시간이 설정되어 있는 경우
 
 #### 취약
+
 - 세션 ID가 일정한 패턴으로 발급되거나 세션 종료 시간이 설정되지 않아 세션 재사용이 가능한 경우
 
 ---
@@ -52,6 +58,7 @@
 ## 취약점 검증 및 공격 수행
 
 ### 실습 화면 (기본 화면)
+
 - DVWA Weak Session IDs 페이지로, Generate 버튼 클릭 시 `dvwaSession`이라는 쿠키를 새로 발급합니다.
 - 페이지 안내 문구인 "This page will set a new cookie called dvwaSession each time the button is clicked."를 통해  
   버튼 클릭마다 새로운 세션 ID가 발급되는 구조임을 확인할 수 있습니다.
@@ -61,6 +68,7 @@
 ---
 
 ### Burp Suite HTTP history 확인 (dvwaSession=1)
+
 - Generate 버튼을 처음 클릭하면 서버가 `Set-Cookie: dvwaSession=1`을 응답합니다.
 
 **Request 탭**
@@ -76,6 +84,7 @@
 ---
 
 ### Burp Suite HTTP history 확인 (dvwaSession=2)
+
 - 두 번째 클릭 시 Request의 쿠키에 `dvwaSession=1`이 포함되어 있으며, 서버는 `Set-Cookie: dvwaSession=2`를 응답합니다.
 - 세션 ID가 1에서 2로 순차 증가하는 패턴이 확인됩니다.
 
@@ -92,6 +101,7 @@
 ---
 
 ### Burp Suite HTTP history 확인 (dvwaSession=3)
+
 - 세 번째 클릭 시 동일하게 `Set-Cookie: dvwaSession=3`이 응답됩니다.
 - dvwaSession 쿠키가 1 → 2 → 3 으로 1씩 증가하는 패턴이 명확하게 확인됩니다.
 - 공격자가 자신의 세션 ID를 기준으로 앞뒤 값을 추측하면 타 사용자의 세션 ID를 알아낼 수 있습니다.
@@ -109,6 +119,7 @@
 ---
 
 ### 소스코드 확인
+
 - Low 레벨 소스코드를 확인한 결과, 세션 ID 생성 로직이 단순 순차 증가 방식으로 구현되어 있습니다.
 
 ```php
