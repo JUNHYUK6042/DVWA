@@ -137,13 +137,22 @@ GET /cookie?security=low;%20PHPSESSID=1af2f54f6bc67d09e94defecb70a327d HTTP/1.1"
 ---
 
 ## 취약점 분석
-- 실습을 진행하면서 입력값이 별도의 인코딩이나 필터링 없이 DB에 그대로 저장되는 것을 확인했습니다.
+
+- 입력값이 별도의 인코딩이나 필터링 없이 DB에 그대로 저장됩니다.
+- 소스코드를 보면 `mysqli_real_escape_string()`만 적용되어 있으며, HTML 인코딩 처리가 전혀 없습니다.
+
+```php
+  $message = stripslashes( $message );
+  $message = mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $message);  // SQL Injection 방어 목적 — XSS 필터링과 무관
+  $query  = "INSERT INTO guestbook ( comment, name ) VALUES ( '$message', '$name' );";  // HTML 인코딩 없이 DB에 그대로 저장
+```
+
 - 쿠키 탈취 스크립트 삽입 후 해당 페이지를 방문할 때마다 스크립트가 자동 실행되었습니다.
-- 서버 로그를 통해 `PHPSESSID` 값이 URL에 포함되어 외부로 전송 시도되는 것을 확인하였습니다.
-- XSS (Stored) 탭 접근 시마다 로그가 반복 기록되어 Stored XSS의 지속성을 실증하였습니다.
-- Reflected XSS와 달리 피해자가 악성 링크를 클릭하지 않아도 페이지 방문만으로 공격이 이루어지는 특성을 확인하였습니다.
-- 따라서 해당 시스템은 XSS (Stored) 취약점이 존재하며,  
-  실제 환경이었다면 세션 탈취, 개인정보 유출, 불특정 다수 대상 공격으로 이어질 수 있는 위험한 상태로 판단됩니다.
+- 서버 로그를 통해 `PHPSESSID` 값이 URL에 포함되어 외부로 전송 시도되는 것을 확인했습니다.
+- XSS (Stored) 탭 접근 시마다 로그가 반복 기록되어 Stored XSS의 지속성을 실증했습니다.
+- Reflected XSS와 달리 피해자가 악성 링크를 클릭하지 않아도 페이지 방문만으로 공격이 이루어집니다.
+
+**판단 : 취약** — 실제 환경이었다면 세션 탈취, 개인정보 유출, 불특정 다수 대상 공격으로 이어질 수 있습니다.
 
 ---
 
