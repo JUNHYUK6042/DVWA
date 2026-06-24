@@ -198,8 +198,17 @@ http://192.168.11.36/DVWA/vulnerabilities/xss_r/?name=%3Cscript%3Edocument.locat
 ## 취약점 분석
 
 - 입력값이 별도의 인코딩이나 필터링 없이 HTML 응답에 그대로 포함됩니다.
-- `<script>`, 이벤트 핸들러(`onerror`) 등 다양한 벡터를 통해 스크립트 실행이 가능한 상태이며,  
-  `document.cookie`를 통한 세션 쿠키 노출도 확인되었습니다.
+- 소스코드를 보면 `$_GET['name']`으로 입력값을 받아 인코딩 없이 HTML에 직접 출력하며, `X-XSS-Protection` 헤더도 비활성화된 상태입니다.
+
+```php
+  header ("X-XSS-Protection: 0");  // 브라우저 XSS 필터 비활성화 — 브라우저 자체 방어 제거
+  
+  if( array_key_exists( "name", $_GET ) && $_GET[ 'name' ] != NULL ) {
+      echo '<pre>Hello ' . $_GET[ 'name' ] . '</pre>';  // 입력값 인코딩 없이 HTML에 직접 출력 — 스크립트 실행 가능
+  }
+```
+
+- `<script>`, 이벤트 핸들러(`onerror`) 등 다양한 벡터를 통해 스크립트 실행이 가능한 상태이며, `document.cookie`를 통한 세션 쿠키 노출도 확인되었습니다.
 
 **판단 : 취약** — 실제 환경이었다면 세션 탈취, 개인정보 유출, 피싱 공격으로 이어질 수 있습니다.
 
