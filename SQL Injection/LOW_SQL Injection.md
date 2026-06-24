@@ -4,9 +4,7 @@
 
 - 본 실습에서는 DVWA의 Low 단계에서 SQL Injection 취약점을 대상으로  
   사용자 입력값에 대한 검증 없이 SQL Query가 실행되는지 확인하여 SQL Injection 취약점 존재 여부를 점검했습니다.
-
-- 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드의  
-  SQL Injection 관련 항목(p.693~699)과 연계하여 점검하였습니다.
+- 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드의 SQL Injection 관련 항목(p.693~699)과 연계하여 점검하였습니다.
 
 ---
 
@@ -79,13 +77,14 @@
 ---
 
 ### 동작 확인
+
 - User ID 입력값이 SQL Query에 그대로 포함되는지 확인하기 위해 작은따옴표(`'`)를 입력했습니다.
 
 ```
 '
 ```
 
-![02](/SQL%20Injection/img/LOW/02.png)
+![02](/SQL%20Injection/img/LOW/02.png)  
 ![03](/SQL%20Injection/img/LOW/03.png)
 
 - 소스코드를 보면 사용자가 입력한 id 값이 그대로 SQL Query문에 삽입됩니다.
@@ -211,6 +210,7 @@ SELECT 1, 2, 3;
 ---
 
 ### 컬럼 개수 확인 (ORDER BY)
+
 - UNION SELECT 공격 전 기존 Query의 컬럼 개수를 확인하기 위해 `order by` 구문을 사용했습니다.
 
 ```sql
@@ -349,7 +349,15 @@ where table_name='users'#
 - `1' or '1'='1` 구문으로 모든 사용자 정보가 출력되어 인증 우회가 가능합니다.
 - `union select`, `order by`를 이용하여 Database 이름, Table 정보, Column 정보까지 조회했으며,  
   최종적으로 `users` 테이블의 계정 정보와 Password Hash 값까지 확인했습니다.
-- 사용자 입력값 검증이 이루어지지 않고 SQL Query가 직접 실행되고 있는 상태입니다.
+- 소스코드를 보면 `$_REQUEST['id']`로 입력값을 받아 검증 없이 SQL Query에 문자열로 직접 연결하며,  
+  오류 발생 시 `mysqli_error()`를 통해 DB 에러 메시지가 그대로 노출됩니다.
+
+```php
+$id = $_REQUEST[ 'id' ];                                          // 입력값 검증 없이 그대로 수신
+$query = "SELECT first_name, last_name FROM users WHERE user_id = '$id';"; // 입력값을 SQL Query에 직접 연결
+$result = mysqli_query($GLOBALS["___mysqli_ston"], $query)
+    or die('<pre>' . mysqli_error($GLOBALS["___mysqli_ston"]) . '</pre>'); // DB 에러 메시지 외부 노출
+```
 
 **판단 : 취약** — 실제 환경이었다면 관리자 계정 탈취, 개인정보 유출, 데이터 변조 등으로 이어질 수 있습니다.
 
@@ -361,6 +369,15 @@ where table_name='users'#
 
 - 사용자 입력값에 대해 숫자, 문자열, 길이 등을 검증하여 비정상적인 SQL 구문이 삽입되지 않도록 제한합니다.
 
+```php
+$id = $_REQUEST['id'];
+
+// 숫자 형식만 허용 — 문자열/특수문자 포함 시 즉시 차단
+if (!is_numeric($id)) {
+    die("유효하지 않은 입력값입니다.");
+}
+```
+
 #### 핵심 효과
 
 - 기본적인 SQL Injection 공격을 사전에 차단합니다.
@@ -370,6 +387,16 @@ where table_name='users'#
 ### Prepared Statement 사용
 
 - SQL Query와 사용자 입력값을 분리하여 입력값이 SQL 문법으로 해석되지 않도록 처리합니다.
+
+```php
+$id = $_REQUEST['id'];
+
+// SQL Query 구조와 입력값을 분리 — '?'에 값을 바인딩하므로 입력값이 SQL 문법으로 해석 불가
+$stmt = $conn->prepare("SELECT first_name, last_name FROM users WHERE user_id = ?");
+$stmt->bind_param("s", $id); // 입력값을 문자열 파라미터로 바인딩 — 특수문자가 쿼리 구조를 변경하지 못함
+$stmt->execute();
+$result = $stmt->get_result();
+```
 
 #### 핵심 효과
 
@@ -381,6 +408,15 @@ where table_name='users'#
 
 - 작은따옴표(`'`), 주석(`--`, `#`), UNION, OR 등 공격에 자주 사용되는 구문을 제한합니다.
 
+```php
+$id = $_REQUEST['id'];
+
+// 작은따옴표, 주석, UNION 등 SQL Injection에 사용되는 패턴 차단
+if (preg_match('/[\'\";\-\-\#]|union|select|or|and/i', $id)) {
+    die("허용되지 않는 문자가 포함되어 있습니다.");
+}
+```
+
 #### 핵심 효과
 
 - 인증 우회 및 정보 조회 공격을 방지합니다.
@@ -390,10 +426,19 @@ where table_name='users'#
 ### 에러 메시지 노출 차단
 
 - SQL 오류 발생 시 DB 에러 메시지를 사용자에게 직접 출력하지 않도록 설정합니다.
+- 에러는 서버 로그에만 기록하고 사용자에게는 일반적인 안내 메시지만 출력합니다.
+
+```php
+$result = mysqli_query($conn, $query);
+if (!$result) {
+    error_log("DB Error: " . mysqli_error($conn)); // 에러 내용은 서버 로그에만 기록 — 외부 노출 차단
+    die("요청을 처리할 수 없습니다.");              // 사용자에게는 일반 메시지만 출력
+}
+```
 
 #### 핵심 효과
 
-- 공격자가 Database 구조를 파악하기 어려워집니다.
+- 공격자가 DB 구조 및 에러 내용을 통해 추가 공격에 활용하는 것을 차단합니다.
 
 ---
 
