@@ -153,9 +153,9 @@ step=2&password_new=hacker&password_conf=hacker&Change=Change
 
 ## 취약점 분석
 
-### 취약한 코드 위치
-
-- 아래는 step=2를 처리하는 서버 코드입니다.
+- step=1 블록에서는 `recaptcha_check_answer()`로 CAPTCHA를 검증하지만, step=2 블록에는 동일한 검증이 없습니다.
+- step 파라미터는 클라이언트가 POST로 전달하는 값이므로 Burp Suite로 자유롭게 조작할 수 있습니다.
+- 서버가 step 값을 신뢰하기 때문에, 공격자가 step=2를 직접 전송하면 CAPTCHA를 전혀 풀지 않아도 비밀번호 변경이 실행됩니다.
 
 ```php
 if( isset( $_POST[ 'Change' ] ) && ( $_POST[ 'step' ] == '2' ) ) {
@@ -167,11 +167,6 @@ if( isset( $_POST[ 'Change' ] ) && ( $_POST[ 'step' ] == '2' ) ) {
     }
 }
 ```
-
-- step=1 블록에서는 `recaptcha_check_answer()`로 CAPTCHA를 검증하지만, step=2 블록에는 동일한 검증이 없습니다.
-- step 파라미터는 클라이언트가 POST로 전달하는 값이므로 Burp Suite로 자유롭게 조작할 수 있습니다.
-- 서버가 step 값을 신뢰하기 때문에, 공격자가 step=2를  
-  직접 전송하면 CAPTCHA를 전혀 풀지 않아도 비밀번호 변경이 실행됩니다.
 
 **판단 : 취약** — 실제 환경이었다면 자동화 봇이 CAPTCHA 없이 대량으로 비밀번호 변경, 계정 탈취 등을 수행할 수 있는 위험한 상태입니다.
 
