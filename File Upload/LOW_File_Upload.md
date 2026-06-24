@@ -179,10 +179,23 @@ whoami
 ## 취약점 분석
 
 - 실행 가능한 PHP 파일인 `webshell.php`가 별도의 차단 없이 정상적으로 업로드되었습니다.
-- 업로드된 파일은 웹 브라우저를 통해 직접 접근할 수 있었으며,  
-  실제로 명령어 입력창이 출력되고 서버 명령이 정상적으로 실행되었습니다.
-- `cat /etc/passwd`, `pwd`, `whoami` 명령을 통해  
-  서버 내부 정보 조회와 웹 서버 권한으로 명령 수행이 가능한 것을 확인했습니다.
+- 소스코드를 보면 GET 파라미터로 받은 명령어를 검증 없이 `system()`으로 직접 실행하는 구조입니다.
+
+```php
+  echo 'Enter a Command:<br>';
+  echo '<form action="">';
+  echo '<input type=text name="cmd">';   // 사용자 입력값을 GET으로 수신
+  echo '<input type="submit">';
+  echo '</form>';
+
+  if (isset($_GET['cmd'])) {
+      system($_GET['cmd']);              // 입력값 검증 없이 system()으로 직접 실행 — 서버 명령어 실행 가능
+  }
+```
+
+- 이 파일이 서버에서 실행됐다는 것 자체가 파일 업로드 시 확장자 검증이 전혀 없다는 증거입니다.
+- 업로드된 파일은 웹 브라우저를 통해 직접 접근할 수 있었으며, 실제로 명령어 입력창이 출력되고 서버 명령이 정상적으로 실행되었습니다.
+- `cat /etc/passwd`, `pwd`, `whoami` 명령을 통해 서버 내부 정보 조회와 웹 서버 권한(`www-data`)으로 명령 수행이 가능한 것을 확인했습니다.
 - 업로드된 파일에 대한 확장자 검증과 실행 제한이 전혀 적용되지 않은 상태입니다.
 
 **판단 : 취약** — 실제 환경이었다면 웹쉘 업로드를 통한 서버 침해로 이어질 수 있습니다.
@@ -197,13 +210,13 @@ whoami
 - `php`, `jsp`, `asp`, `exe` 등 실행 가능한 파일은 업로드되지 않도록 차단합니다.
 
 ```php
-$allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
-$file_ext = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+  $allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
+  $file_ext = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
 
-// 허용된 확장자 목록에 없으면 업로드 즉시 차단
-if (!in_array($file_ext, $allowed_ext)) {
-    die("허용되지 않는 파일 형식입니다.");
-}
+  // 허용된 확장자 목록에 없으면 업로드 즉시 차단
+  if (!in_array($file_ext, $allowed_ext)) {
+      die("허용되지 않는 파일 형식입니다.");
+  }
 ```
 
 #### 핵심 효과
@@ -218,14 +231,14 @@ if (!in_array($file_ext, $allowed_ext)) {
 - 파일명이 `image.php.jpg`처럼 위장된 경우도 탐지할 수 있도록 설정합니다.
 
 ```php
-$allowed_mime = ['image/jpeg', 'image/png', 'image/gif'];
+  $allowed_mime = ['image/jpeg', 'image/png', 'image/gif'];
 
-// 파일 내용 기반 실제 MIME 타입 확인 — 확장자 위장 우회 차단
-$file_mime = mime_content_type($_FILES['file']['tmp_name']);
+  // 파일 내용 기반 실제 MIME 타입 확인 — 확장자 위장 우회 차단
+  $file_mime = mime_content_type($_FILES['file']['tmp_name']);
 
-if (!in_array($file_mime, $allowed_mime)) {
-    die("허용되지 않는 파일 형식입니다.");
-}
+  if (!in_array($file_mime, $allowed_mime)) {
+      die("허용되지 않는 파일 형식입니다.");
+  }
 ```
 
 #### 핵심 효과
@@ -237,13 +250,14 @@ if (!in_array($file_mime, $allowed_mime)) {
 ### 업로드 파일 실행 제한
 
 - 업로드된 파일이 서버에서 실행되지 않도록 설정합니다.
-- 업로드 디렉토리에서는 PHP 실행 권한을 제거하거나 웹 서버 설정을 통해 스크립트 실행을 차단합니다.
+- 업로드 디렉토리에서는 PHP 실행 권한을 제거하거나  
+  웹 서버 설정을 통해 스크립트 실행을 차단합니다.
 
 ```apache
-# 업로드 디렉토리 내 PHP 파일 실행 차단 — 웹쉘이 업로드되어도 실행 불가
-<FilesMatch "\.(php|phtml|php3|php4|php5|php7|phar)$">
-    Deny from all
-</FilesMatch>
+  # 업로드 디렉토리 내 PHP 파일 실행 차단 — 웹쉘이 업로드되어도 실행 불가
+  <FilesMatch "\.(php|phtml|php3|php4|php5|php7|phar)$">
+      Deny from all
+  </FilesMatch>
 ```
 
 #### 핵심 효과
@@ -254,7 +268,8 @@ if (!in_array($file_mime, $allowed_mime)) {
 
 ### 웹 루트 외부에 저장
 
-- 업로드된 파일을 `/var/www/html`과 같은 웹 접근 가능 경로가 아닌 별도의 외부 디렉토리에 저장합니다.
+- 업로드된 파일을 `/var/www/html`과 같은 웹 접근 가능 경로가 아닌  
+  별도의 외부 디렉토리에 저장합니다.
 
 #### 핵심 효과
 
@@ -265,7 +280,6 @@ if (!in_array($file_mime, $allowed_mime)) {
 ### 최소 권한 원칙 적용
 
 - 웹 서버 실행 계정의 권한을 최소화하고 중요 시스템 파일 접근 권한을 제한합니다.
-
 #### 핵심 효과
 
 - 침해가 발생하더라도 피해 범위를 최소화할 수 있습니다.
