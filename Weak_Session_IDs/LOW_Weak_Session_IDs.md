@@ -4,12 +4,9 @@
 
 ## 개요
 
-- 본 실습에서는 DVWA의 Low 단계에서 Weak Session IDs 취약점을 대상으로  
-  세션 ID가 예측 가능한 순차 증가 방식으로 발급되어 공격자가 타 사용자의 세션 ID를 추측하고  
-  세션 하이재킹이 가능한지 확인하여 취약한 세션 관리 여부를 점검했습니다.
-
-- 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드  
-  **16. 불충분한 세션 관리(p.759)** 항목과 연계하여 점검하였습니다.
+- 본 실습에서는 DVWA의 Low 단계에서 Weak Session IDs 취약점을 대상으로 세션 ID가 예측 가능한 순차 증가 방식으로 발급되어  
+  공격자가 타 사용자의 세션 ID를 추측하고 세션 하이재킹이 가능한지 확인하여 취약한 세션 관리 여부를 점검했습니다.
+- 주요정보통신기반시설 기술적 취약점 분석·평가 방법 상세가이드 **16. 불충분한 세션 관리(p.759)** 항목과 연계하여 점검하였습니다.
 
 ---
 
@@ -31,7 +28,7 @@
 
 ### 보안 위협
 
-- 사용자에게 발급되는 세션 ID가 만료되지 않거나, 고정 및 예측 가능한 형태일 경우,  
+- 사용자에게 발급되는 세션 ID가 만료되지 않거나, 고정 및 예측 가능한 형태일 경우,
   공격자는 해당 세션 ID를 탈취하여 타 사용자나 시스템에 무단 접근할 수 있으며,  
   이로 인해 중요 데이터의 무결성이 훼손될 수 있습니다.
 
@@ -126,17 +123,15 @@
 
 ```php
 <?php
-
-$html = "";
-
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    if (!isset($_SESSION['last_session_id'])) {
-        $_SESSION['last_session_id'] = 0;
-    }
-    $_SESSION['last_session_id']++;            // 세션 ID를 1씩 증가
-    $cookie_value = $_SESSION['last_session_id'];
-    setcookie("dvwaSession", $cookie_value);   // 증가된 값을 그대로 쿠키로 발급
-}
+  $html = "";
+  if ($_SERVER['REQUEST_METHOD'] == "POST") {
+      if (!isset($_SESSION['last_session_id'])) {
+          $_SESSION['last_session_id'] = 0;
+      }
+      $_SESSION['last_session_id']++;            // 세션 ID를 1씩 증가
+      $cookie_value = $_SESSION['last_session_id'];
+      setcookie("dvwaSession", $cookie_value);   // 증가된 값을 그대로 쿠키로 발급
+  }
 ?>
 ```
 
@@ -150,7 +145,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 - Generate 버튼을 클릭할 때마다 dvwaSession 쿠키가 1 → 2 → 3 순으로 순차 증가하는 것을 Burp Suite HTTP history에서 확인했습니다.
 - 세션 ID 생성에 난수가 사용되지 않아 공격자가 패턴만 파악하면 타 사용자의 세션 ID를 추측할 수 있습니다.
 - 쿠키 값을 변조하면 인증 없이 해당 세션의 사용자로 접근이 가능한 상태입니다.
-  
+- 소스코드를 보면 `$_SESSION['last_session_id']`를 단순히 1씩 증가시켜 그대로 쿠키로 발급하며, 보안 옵션도 적용되지 않았습니다.
+
+```php
+  $_SESSION['last_session_id']++;            // 난수 없이 1씩 증가 — 패턴 예측 가능
+  $cookie_value = $_SESSION['last_session_id'];
+  setcookie("dvwaSession", $cookie_value);   // HttpOnly/Secure 옵션 없이 발급
+```
+
 **판단 : 취약** — 실제 환경이었다면 세션 하이재킹을 통해 타 사용자 계정 탈취, 개인정보 유출, 권한 상승 공격으로 이어질 수 있습니다.
 
 ---
@@ -164,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 ```php
 session_start();
-session_regenerate_id(true); // 기존 세션 폐기 후 새 세션 ID 발급
+session_regenerate_id(true); // 기존 세션 폐기 후 새 세션 ID 발급 — 고정 세션 탈취 차단
 ```
 
 #### 핵심 효과
@@ -180,7 +182,7 @@ session_regenerate_id(true); // 기존 세션 폐기 후 새 세션 ID 발급
 
 #### 핵심 효과
 
-- 세션 ID 탈취를 위한 브루트포스 공격을 현실적으로 불가능합니다.
+- 세션 ID 탈취를 위한 브루트포스 공격을 현실적으로 불가능하게 만듭니다.
 
 ---
 
@@ -190,9 +192,9 @@ session_regenerate_id(true); // 기존 세션 폐기 후 새 세션 ID 발급
 
 ```php
 setcookie("dvwaSession", $cookie_value, [
-    'httponly' => true,
-    'secure'   => true,
-    'samesite' => 'Strict'
+    'httponly' => true,    // JavaScript 쿠키 접근 차단 — XSS 연계 탈취 방지
+    'secure'   => true,    // HTTPS에서만 쿠키 전송 — 네트워크 도청 차단
+    'samesite' => 'Strict' // 외부 사이트 요청 시 쿠키 전송 차단 — CSRF 방지
 ]);
 ```
 
@@ -205,6 +207,13 @@ setcookie("dvwaSession", $cookie_value, [
 ### 세션 만료 시간 설정
 
 - 일정 시간 미사용 시 세션을 자동으로 만료시켜 장기간 유효한 세션이 탈취되는 위험을 줄입니다.
+
+```php
+// 세션 유효 시간 30분으로 제한 — 미사용 세션 자동 만료
+ini_set('session.gc_maxlifetime', 1800);
+session_set_cookie_params(1800);
+session_start();
+```
 
 #### 핵심 효과
 
