@@ -1,4 +1,5 @@
 # DVWA
+
 DVWA(Damn Vulnerable Web Application) 환경에서 주요 웹 취약점을 직접 점검·분석하고,  
 주요정보통신기반시설 기술적 취약점 분석·평가 기준에 따라 보고서로 정리한 문서입니다.
 
@@ -57,3 +58,10 @@ DVWA(Damn Vulnerable Web Application) 환경에서 주요 웹 취약점을 직�
 | 실습 | 설명 |
 |------|------|
 | [Open HTTP Redirect](./Open%20HTTP%20Redirect/LOW_Open%20HTTP%20Redirect.md) | 검증되지 않은 외부 URL 리다이렉트 점검 |
+
+### 🌐 API / 암호화
+
+| 실습 | 설명 |
+|------|------|
+| [API Security](./API/LOW_API.md) | API 버전 관리 미흡 및 인가되지 않은 객체 접근(BOLA) 점검 |
+| [Cryptography](./Cryptography/LOW_Cryptography.md) | 취약한 암호화 알고리즘 적용 및 해시 크랙 점검 |
